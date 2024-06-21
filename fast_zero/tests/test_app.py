@@ -1,42 +1,43 @@
 from http import HTTPStatus
 
-from fastapi.testclient import TestClient
 
-from fast_zero.app import app
+def test_create_user_retorna_user(client):
+    # Act
+    response = client.post(
+        url="/users/",
+        json={"username": "kenan", "password": "kel", "email": "kenan@kel.com"},
+    )
 
-def test_root_deve_retornar_ok_e_ola_mundo():
-    # Organizar - arrange
-    client = TestClient(app) 
+    # Assert
+    assert response.status_code == HTTPStatus.CREATED
+    assert response.json() == {
+        "email": "kenan@kel.com",
+        "username": "kenan",
+        "password": "kel",
+        "id": 1,
+    }
 
-    # Agir - act
-    response = client.get("/")
 
-    # Verificar - assert
+def test_get_users(client):
+    # Act
+    response = client.get("/users/")
+
+    # Assert
     assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        "users": [{"username": "kenan", "email": "kenan@kel.com", "id": 1}]
+    }
 
-    # Verificar - assert
-    assert response.json() == {"message": "Olá, planeta."}
 
-def test_hw_html_deve_retornar_ok_e_html():
-    # Organizar - arrange
-    client = TestClient(app)    
-    
-    # Organizar - arrange
-    response_text = """
-  <html>
-    <head>
-      <title> Nosso olá mundo!</title>
-    </head>
-    <body>
-      <h1> Olá Mundo </h1>
-    </body>
-  </html>"""
-    
-    # Agir - act
-    response = client.get("/hw_html")  
+def test_update_user(client):
+    response = client.put(
+        "/users/1",
+        json={"username": "chris", "email": "chris@market.com", "password": "water"},
+    )
 
-    # Verificar - Status code
-    assert response.status_code == HTTPStatus.OK 
-    
-    # Verificar - Message text
-    assert response.text == response_text
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        "username": "chris",
+        "email": "chris@market.com",
+        "id": 1,
+    }

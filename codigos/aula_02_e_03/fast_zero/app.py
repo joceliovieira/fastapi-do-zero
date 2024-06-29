@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from fastapi import FastAPI, HTTPException
 
-from fast_zero.schemas import UserSchema, UserDB, UserList, UserPublic, Message
+from fast_zero.schemas import UserSchema, UserDB, UserList, UsernameList, UserPublic, Message
 
 db = list()
 
@@ -47,3 +47,16 @@ def delete_user(user_id: int):
 
     return {"message": f"Usuário ID[{user_id}] deletado com sucesso."}
 
+# Exercício - GET de recurso único
+# Endpoint para obtenção de username únicos
+@app.get('/users/unique_usernames', response_model=UsernameList)
+def get_unique_username():
+    if len(db) == 0:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail='Não há usuários cadastrados.'
+        )
+    usernames = [user.username for user in db]
+    unique_usernames = set(usernames)
+    unique_usernames = list(unique_usernames)
+    return {'usernames': unique_usernames}

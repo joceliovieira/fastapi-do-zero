@@ -9,7 +9,7 @@ db = list()
 app = FastAPI()
 
 
-@app.post("/users/", response_model=UserDB, status_code=HTTPStatus.CREATED)
+@app.post("/users/", response_model=UserPublic, status_code=HTTPStatus.CREATED)
 def create_user(user: UserSchema):
     user_with_id = UserDB(id=len(db) + 1, **user.model_dump())
     db.append(user_with_id)
@@ -46,3 +46,4 @@ def delete_user(user_id: int):
     del db[user_id - 1]
 
     return {"message": f"Usuário ID[{user_id}] deletado com sucesso."}
+

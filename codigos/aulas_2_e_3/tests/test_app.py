@@ -13,7 +13,6 @@ def test_create_user_retorna_user(client):
     assert response.json() == {
         "email": "kenan@kel.com",
         "username": "kenan",
-        "password": "kel",
         "id": 1,
     }
 
@@ -41,3 +40,46 @@ def test_update_user(client):
         "email": "chris@market.com",
         "id": 1,
     }
+
+
+def test_delete_users(client):
+    # Arrange
+    user_id = 1
+    
+    # Act
+    response = client.delete(f'/users/{user_id}')
+    
+    # Assert
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {"message": f"Usuário ID[{user_id}] deletado com sucesso."}
+    
+
+# Exercícios da aula 03
+
+# Teste considerando falha e a exceção que dever ser levantada
+# em caso de ser passado um ID inválido
+def test_put_invalid_id(client):
+    # Arrange
+    user_id = -4
+    
+    # Act
+    response = client.put(f'/users/{user_id}', json={
+        'username': 'roger',
+        'email': 'roger@kk.nick',
+        'password': 'love'
+    })
+    
+    # Assert
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    
+# Teste considerando falha e a exceção que dever ser levantada
+# em caso de ser passado um ID inválido
+def test_delete_invalid_id(client):
+    # Arrange
+    user_id = -4
+    
+    # Act
+    response = client.delete(f'/users/{user_id}')
+    
+    # Assert
+    assert response.status_code == HTTPStatus.NOT_FOUND

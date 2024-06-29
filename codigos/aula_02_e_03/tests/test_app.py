@@ -1,5 +1,13 @@
 from http import HTTPStatus
 
+# Exercício - teste prevendo falha com db vazio
+def test_get_unique_username_empty(client):
+    # Act
+    response = client.get('/users/unique_usernames')
+
+    # Assert
+    assert response.status_code == HTTPStatus.NOT_FOUND
+
 
 def test_create_user_retorna_user(client):
     # Act
@@ -41,6 +49,13 @@ def test_update_user(client):
         "id": 1,
     }
 
+# Exercício - teste com db não-vazio
+def test_get_unique_username(client):
+    # Act
+    response = client.get('/users/unique_usernames')
+    # Assert
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'usernames': ['chris']}
 
 def test_delete_users(client):
     # Arrange
@@ -54,10 +69,7 @@ def test_delete_users(client):
     assert response.json() == {"message": f"Usuário ID[{user_id}] deletado com sucesso."}
     
 
-# Exercícios da aula 03
-
-# Teste considerando falha e a exceção que dever ser levantada
-# em caso de ser passado um ID inválido
+# Exercício - Teste de atualização prevendo falha de ID inválido
 def test_put_invalid_id(client):
     # Arrange
     user_id = -4
@@ -72,8 +84,7 @@ def test_put_invalid_id(client):
     # Assert
     assert response.status_code == HTTPStatus.NOT_FOUND
     
-# Teste considerando falha e a exceção que dever ser levantada
-# em caso de ser passado um ID inválido
+# Exercício - Teste de delete prevendo falha de ID inválido
 def test_delete_invalid_id(client):
     # Arrange
     user_id = -4

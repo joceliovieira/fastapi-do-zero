@@ -41,6 +41,14 @@ def test_update_user(client):
         "id": 1,
     }
 
+# Teste para condição OK do get_unique_usernames
+def test_get_unique_usernames_ok(client):
+    # Act
+    response = client.get('/users/unique_usernames')
+    
+    # Assert
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'usernames': ['chris']}
 
 def test_delete_users(client):
     # Arrange
@@ -53,8 +61,14 @@ def test_delete_users(client):
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {"message": f"Usuário ID[{user_id}] deletado com sucesso."}
     
+# Teste para condição NOT_FOUND do get_unique_usernames, pois não há usuários cadastrados
+def test_get_unique_usernames_not_found(client):
+    # Act
+    response = client.get('/users/unique_usernames')
+    
+    # Assert
+    assert response.status_code == HTTPStatus.NOT_FOUND
 
-# Exercícios da aula 03
 
 # Teste considerando falha e a exceção que dever ser levantada
 # em caso de ser passado um ID inválido
@@ -71,6 +85,7 @@ def test_put_invalid_id(client):
     
     # Assert
     assert response.status_code == HTTPStatus.NOT_FOUND
+ 
     
 # Teste considerando falha e a exceção que dever ser levantada
 # em caso de ser passado um ID inválido
@@ -83,3 +98,4 @@ def test_delete_invalid_id(client):
     
     # Assert
     assert response.status_code == HTTPStatus.NOT_FOUND
+

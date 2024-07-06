@@ -5,9 +5,15 @@ from sqlalchemy import pool
 
 from alembic import context
 
+# Importação das configurações e modelos do projeto
+from fast_zero.settings import Settings
+from fast_zero.models import table_registry
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+# Add a URL do banco de dados do projeto nas configurações da migração
+config.set_main_option('sqlalchemy.url', Settings().DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -18,7 +24,9 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+# target_metadata = None
+# Atualiza o target da migraçãoi
+target_metadata = table_registry.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
